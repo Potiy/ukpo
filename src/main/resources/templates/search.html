@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name='viewport' content='width=device-width, initial-scale=1'/>
+    <title>Поиск оборудования</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="/js/search.js"></script>
+    <style type="text/css">
+        .centerLayer {
+            margin-left: 15%;
+            width: 40%;
+            padding: 10px;
+        }
+        button {
+            padding: 5px 15px;
+            background: #28cc7c;
+            cursor: pointer;
+            border-radius: 0px 10px;
+            margin: 0;
+            width: 30%;
+        }
+        #err {
+            color: red;
+        }
+        input {
+            width: 60%;
+            background: #9dccb9;
+        }
+    </style>
+</head>
+<body ng-app="search" ng-controller="SearchController">
+<form class="centerLayer" method='GET'>
+    <div ng-show="isSearchError" id="err">
+        <strong>Error!</strong> {{errorMessage}}
+    </div>
+    <div class="input-group">
+        <input type="text" name ="id" ng-model="id" placeholder="Введите id" /> <br />
+        <button name="btnSearch" type="submit" ng-click="search(id)">
+            Найти
+        </button>
+
+    </div>
+</form>
+<div ng-show="houseList.length > 0" class='centerLayer' style="width: 60%">
+    <h2 align='center'>Аренда</h2>
+    <table id="Table" border="3" width="100%" >
+        <tr>
+            <th>№</th>
+            <th>ФИО</th>
+            <th>Адрес</th>
+            <th>Тел. номер</th>
+            <th>Цена</th>
+        </tr>
+        <tr ng-repeat="houses in houseList">
+            <td>{{houses.id}}</td>
+            <td>{{houses.name}}</td>
+            <td>{{houses.address}}</td>
+            <td>{{houses.phone}}</td>
+            <td>{{houses.cost}}</td>
+        </tr>
+    </table>
+</div>
+<div class="centerLayer">
+    <div id="block">
+        <button type="button" onclick="location.href='houses'">
+            Назад
+        </button>
+    </div>
+</div>
+</body>
+</html>

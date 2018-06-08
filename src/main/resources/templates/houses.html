@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="/js/houses.js"></script>
+    <title>Аренда недвижимости</title>
+    <style type="text/css">
+        input {
+            line-height: 2;
+            width: 30%;
+            background: #9dccb9;
+            margin-bottom: 4px;
+        }
+        input[type=submit] {
+
+            padding: 5px 15px;
+            background: #28cc7c;
+            cursor: pointer;
+            border-radius: 0px 10px;
+        }
+        td {
+            text-align: center;
+        }
+        td input[type=button]{
+            width: 10%;
+            height: 30px;
+            padding: 0;
+            margin-bottom: 0;
+            background: #28cc7c;
+            cursor: pointer;
+            border-radius: 0px 10px;
+        }
+        button {
+            padding: 5px 15px;
+            background: #28cc7c;
+            cursor: pointer;
+            border-radius: 0px 10px;
+            margin: 0;
+        }
+        #err {
+            color: red;
+        }
+    </style>
+</head>
+<body ng-app="houses" ng-controller="HousesController">
+    <h2>Аренда недвижимости</h2>
+
+    <div sec:authorize="isAnonymous()" >
+        <a href="/login"><button name = "btnLogin">Login</button></a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <a href="/logout"> <button name="btnLogout">Logout </button> </a>
+    </div>
+
+    <div ng-controller="getHouses" ng-show="houseList.length > 0">
+
+        <table id="Table" border="3" width="60%" >
+            <tr>
+                <th>№</th>
+                <th>ФИО</th>
+                <th>Адрес</th>
+                <th>Телефонный номер</th>
+                <th>Цена</th>
+                <th>Удаление</th>
+            </tr>
+            <tr ng-repeat="house in houseList" id="{{house.id}}">
+                <td>{{house.id}}</td>
+                <td>{{house.name}}</td>
+                <td>{{house.address}}</td>
+                <td>{{house.phone}}</td>
+                <td>{{house.cost}}</td>
+                <td><div sec:authorize="isAuthenticated()"> <input name="delHouse" type="button" value="" ng-click="delete(house.id)" /></div></td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div ng-show="isAddError" id="err">
+        <strong>Error!</strong> {{errorMessage}}
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form role="form" ng-submit="addHouses(id, name, address, phone, cost)">
+            <input type="text" name="id" ng-model="id" placeholder="id" /> <br />
+            <input type="text" name="name" ng-model="name" placeholder="ФИО" /> <br />
+            <input type="text" name="address" ng-model="address" placeholder="Адрес" /> <br />
+            <input type="text" name="phone" ng-model="phone" placeholder="Тел. номер" /> <br />
+            <input type="text" name="cost" ng-model="cost" placeholder="Цена" /> <br />
+            <input name="addHouse" type="submit" value="Добавить" />
+        </form>
+    </div>
+    <button name="toSearch" onclick="location.href='search'">
+        Перейти к поиску
+    </button>
+
+</body>
+</html>
