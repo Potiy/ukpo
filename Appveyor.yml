@@ -1,5 +1,6 @@
 version: '{build}'
 os: Windows Server 2012
+
 environment:
   global:
       PYTHON: "C:\\conda"
@@ -8,6 +9,7 @@ environment:
       - PYTHON_VERSION: "3.5"
         CONDA_DEPENDENCIES: "setuptools pytest pyqt=4.* qt=4.*"
         PIP_DEPENDENCIES: "pytest-qt"
+
 platform:
     -x64
 
