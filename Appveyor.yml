@@ -1,23 +1,32 @@
 version: '{build}'
 os: Windows Server 2012
+environment:
+  global:
+      PYTHON: "C:\\conda"
+      PYTHON_ARCH: "64"
+  matrix:
+      - PYTHON_VERSION: "3.5"
+        CONDA_DEPENDENCIES: "setuptools pytest pyqt=4.* qt=4.*"
+        PIP_DEPENDENCIES: "pytest-qt"
+platform:
+    -x64
+
 install:
-  # - cmd: ECHO %PATH%
-  # - ps: |
-  #     Add-Type -AssemblyName System.IO.Compression.FileSystem
-  #     if (!(Test-Path -Path "C:\maven" )) {
-  #       (new-object System.Net.WebClient).DownloadFile(
-  #         'http://www.us.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.zip',
-  #         'C:\maven-bin.zip'
-  #       )
-  #       [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\maven-bin.zip", "C:\maven")
-  #     }
-  - cmd: SET PATH=C:\maven\apache-maven-3.2.5\bin;%JAVA_HOME%\bin;%PATH%
-  - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
-  - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
-build_script:
-  - mvn clean package --batch-mode -DskipTest
+  # Install conda using ci-helpers. More information about ci-helpers can
+  # be found here: https://github.com/astropy/ci-helpers
+  - "git clone git://github.com/astropy/ci-helpers.git"
+  - "rm ci-helpers/test_env.py"
+  - "powershell ci-helpers/appveyor/install-miniconda.ps1"
+
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+  - "activate test"
+
+build: false  # Not a C# project, build stuff at the test step instead.
+
 test_script:
-  - mvn clean install --batch-mode
-cache:
-  - C:\maven\
-  - C:\Users\appveyor\.m2
+  # Run the project tests (don't do examples because they are too slow)
+  - "py.test -s guitest.py"
